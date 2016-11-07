@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import net.bingyan.xuyu.domain.Moment;
 import net.bingyan.xuyu.domain.MomentPhoto;
+import net.bingyan.xuyu.domain.MomentWithPhotos;
 import net.bingyan.xuyu.service.MomentService;
 import net.bingyan.xuyu.service.UserService;
 import net.bingyan.xuyu.service.UtilService;
 
 @Controller
 @RequestMapping(value = "/moment")
-public class MomentController extends BaseController {
+public class MomentController extends BaseController
+{
 
 	@Autowired
 	private MomentService momentService;
@@ -34,22 +36,30 @@ public class MomentController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/all/{mode}/{offset}")
 	public Map<String, Object> getAll(@PathVariable("mode") String mode, @PathVariable("offset") Integer offset)
-			throws Exception {
+			throws Exception
+	{
 		List<Map<String, Object>> momentsWithPhotos = new ArrayList<>();
 		Map<String, Object> momentWithPhotos;
 		List<Moment> moments = new ArrayList<>();
-		if (mode == "hottest") {
+		if (mode.equals("hottest"))
+		{
 			moments = momentService.getHottestMoments();
-		} else if (mode == "newest") {
-			moments = momentService.getNewestMoments();
-		} else {
-			// TODO
-			throw new Exception();
 		}
-		for (Moment moment : moments) {
+		else if (mode.equals("newest"))
+		{
+			moments = momentService.getNewestMoments();
+		}
+		else
+		{
+			// TODO
+			throw new Exception("invalid mode!");
+		}
+		for (Moment moment : moments)
+		{
 			momentWithPhotos = new HashMap<>();
 			momentWithPhotos.put("moment", moment);
-			momentWithPhotos.put("photo", utilService.getMomentPhotos(moment).get(0));
+			momentWithPhotos.put("photo", utilService.getMomentPhotos(moment).size() == 0 ? null
+					: utilService.getMomentPhotos(moment).get(0));
 			momentWithPhotos.put("commentSum", momentService.getCommentSum(moment));
 			momentWithPhotos.put("favoriteSum", momentService.getFavoriteSum(moment));
 			momentsWithPhotos.add(momentWithPhotos);
@@ -59,7 +69,8 @@ public class MomentController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/{momentID}")
-	public Map<String, Object> get(@PathVariable("momentID") Integer momentID) {
+	public Map<String, Object> get(@PathVariable("momentID") Integer momentID)
+	{
 		Map<String, Object> momentWithPhotos = new HashMap<>();
 		Moment moment = momentService.getMoment(momentID);
 		List<MomentPhoto> photos = utilService.getMomentPhotos(moment);
@@ -71,21 +82,38 @@ public class MomentController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/favorite/{userID}/{action}/{momentID}")
 	public Map<String, Object> favorite(@PathVariable("userID") Integer userID, @PathVariable("action") String action,
-			@PathVariable("momentID") Integer momentID) throws Exception {
-		if (action == "add") {
+			@PathVariable("momentID") Integer momentID) throws Exception
+	{
+		if (action.equals("add"))
+		{
 			momentService.favoriteMoment(userService.getUser(userID), momentService.getMoment(momentID));
-		} else if (action == "remove") {
+		}
+		else if (action.equals("remove"))
+		{
 			momentService.undoFavoriteMoment(userService.getUser(userID), momentService.getMoment(momentID));
-		} else {
+		}
+		else
+		{
 			throw new Exception("invalid action!");
 		}
 		return pack(null);
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/add")
-	public Map<String, Object> add(@RequestBody Moment moment) {
+	@RequestMapping(value = "/{userId}/add")
+	public Map<String, Object> add(@RequestBody MomentWithPhotos momentWithPhotos,
+			@PathVariable(value = "userId") Integer userId)
+
+	{
+		Moment moment = momentWithPhotos.getMoment();
+		moment.setUserId(userId);
 		momentService.addMoment(moment);
+		for (MomentPhoto momentPhoto : momentWithPhotos.getMomentPhotos())
+		{
+			momentPhoto.setMomentId(moment.getMomentId());
+			utilService.addMomentPhotos(momentPhoto);
+		}
+
 		return pack(moment.getMomentId());
 	}
 }

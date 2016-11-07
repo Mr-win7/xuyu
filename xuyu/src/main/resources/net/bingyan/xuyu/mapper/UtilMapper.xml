@@ -33,36 +33,36 @@
     <result column="moment_id" jdbcType="INTEGER" property="momentId" />
   </resultMap>
 	<select id="selectCountByCommentAgree" parameterType="java.lang.Integer"
-		resultType="java.lang.Integer">SELECT COUNT(*) FROM users_agree_comments WHERE comment_id = {#commentId};</select>
+		resultType="java.lang.Integer">SELECT COUNT(*) FROM users_agree_comments WHERE comment_id = #{commentId};</select>
 	<select id="selectCountByCommentFavorite"
-		parameterType="java.lang.Integer" resultType="java.lang.Integer">SELECT COUNT(*) FROM users_favorite_comments WHERE comment_id = {#commentId};</select>
-	<select id="selectHottestMoments" resultMap="MomentResultMap">SELECT moment.moment_id, moment.movie FROM moment LEFT JOIN (SELECT COUNT(*) AS comments_sum, moment_id FROM comments GROUP BY moment_id) AS moment_comments_sum ON moment.moment_id = moment_comments_sum.moment_id ORDER BY moment_comments_sum.comments_sum;</select>
+		parameterType="java.lang.Integer" resultType="java.lang.Integer">SELECT COUNT(*) FROM users_favorite_comments WHERE comment_id = #{commentId};</select>
+	<select id="selectHottestMoments" resultMap="MomentResultMap">SELECT moment.moment_id, moment.user_id, moment.movie FROM moment LEFT JOIN (SELECT COUNT(*) AS comments_sum, moment_id FROM comments GROUP BY moment_id) AS moment_comments_sum ON moment.moment_id = moment_comments_sum.moment_id ORDER BY moment_comments_sum.comments_sum;</select>
 	<select id="selectNewestMoments" resultMap="MomentResultMap">
-		SELECT moment_id, movie FROM moment ORDER BY time;	
+		SELECT moment_id, user_id, movie FROM moment ORDER BY time;	
 	</select>
 	<select id="selectCountByMomentComment" parameterType="java.lang.Integer"
-		resultType="java.lang.Integer">SELECT COUNT(*) FROM comments WHERE moment_id = {#momentId};</select>
+		resultType="java.lang.Integer">SELECT COUNT(*) FROM comments WHERE moment_id = #{momentId};</select>
 	<select id="selectCountByMomentFavorite"
 		parameterType="java.lang.Integer" resultType="java.lang.Integer">
-		SELECT COUNT(*) FROM users_favorite_moment WHERE moment_id = {#momentId};
+		SELECT COUNT(*) FROM users_favorite_moment WHERE moment_id = #{momentId};
 		
 	</select>
 	<select id="selectMomentByMovie" parameterType="java.lang.String"
-		resultMap="MomentResultMap">SELECT moment_id, movie FROM moment WHERE movie = {#movie};</select>
+		resultMap="MomentResultMap">SELECT moment_id, movie FROM moment WHERE movie = #{movie};</select>
 	<select id="selectMomentComment" parameterType="java.lang.Integer"
 		resultMap="CommentResultMap">
-		SELECT * FROM comment WHERE moment_id = {#momentId};
+		SELECT * FROM comments WHERE moment_id = #{momentId};
 	</select>
 	<select id="selectUserFavoriteMoments"
-		parameterType="java.lang.Integer" resultMap="MomentResultMap">SELECT * FROM moment WHERE moment_id IN (SELECT moment_id FROM user_favorite_moment WHERE user_id = {#user_id});</select>
+		parameterType="java.lang.Integer" resultMap="MomentResultMap">SELECT * FROM moment WHERE moment_id IN (SELECT moment_id FROM users_favorite_moment WHERE user_id = #{user_id});</select>
 	<select id="selectUserFavoriteComments"
-		parameterType="java.lang.Integer" resultMap="CommentResultMap">SELECT * FROM comments WHERE comment_id IN (SELECT comment_id FROM user_favorite_comments WHERE comment_id = {#comment_id});</select>
+		parameterType="java.lang.Integer" resultMap="CommentResultMap">SELECT * FROM comments WHERE comment_id IN (SELECT comment_id FROM users_favorite_comments WHERE comment_id = #{comment_id});</select>
 	<select id="selectUserPublishedMoments"
-		parameterType="java.lang.Integer" resultMap="MomentResultMap">SELECT * FROM moment WHERE user_id = {#userId};</select>
+		parameterType="java.lang.Integer" resultMap="MomentResultMap">SELECT * FROM moment WHERE user_id = #{userId};</select>
 	<select id="selectUserPublishedComments"
-		parameterType="java.lang.Integer" resultMap="CommentResultMap">SELECT * FROM comments WHERE writer = {#writer};</select>
+		parameterType="java.lang.Integer" resultMap="CommentResultMap">SELECT * FROM comments WHERE writer = #{writer};</select>
 	<select id="selectMomentPhotos" parameterType="java.lang.Integer"
 		resultMap="MomentPhotoResultMap">
-		SELECT * FROM moment_photo WHERE moment_id = {#momentId};
+		SELECT * FROM moment_photo WHERE moment_id = #{momentId};
 	</select>
 </mapper>

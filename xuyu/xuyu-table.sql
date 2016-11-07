@@ -20,11 +20,11 @@ CREATE TABLE users
     PRIMARY KEY(user_id)
 );
 
-CREATE TABLE movie
+/*CREATE TABLE movie
 (
     title VARCHAR(50),
     PRIMARY KEY(title)
-);
+);*/
 
 CREATE TABLE moment
 (
@@ -33,7 +33,7 @@ CREATE TABLE moment
     movie VARCHAR(50),
     time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY(moment_id),
-    FOREIGN KEY(movie) REFERENCES movie(title),
+--    FOREIGN KEY(movie) REFERENCES movie(title),
     FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
 
@@ -85,5 +85,9 @@ CREATE TABLE users_favorite_moment
     FOREIGN KEY(user_id) REFERENCES users(user_id),
     FOREIGN KEY(moment_id) REFERENCES moment(moment_id) 
 );
+
+CREATE USER 'xuyu'@'localhost' IDENTIFIED BY 'xuyupassword';
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON xuyu.* TO 'xuyu'@'localhost';
 
 select moment.moment_id, moment.movie from moment left join (select count(*) as comments_sum, moment_id from comments group by moment_id) as moment_comments_sum on moment.moment_id = moment_comments_sum.moment_id order by moment_comments_sum.comments_sum;

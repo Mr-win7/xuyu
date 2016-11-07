@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class BaseController {
+public class BaseController
+{
 
-	protected Map<String, Object> pack(Object object) {
+	protected Map<String, Object> pack(Object object)
+	{
 		Map<String, Object> WebPackage = new HashMap<String, Object>();
 		WebPackage.put("code", new Integer(0));
 		WebPackage.put("msg", "成功");
@@ -21,10 +23,12 @@ public class BaseController {
 
 	@ResponseBody
 	@ExceptionHandler
-	public Map<String, Object> exp(Exception exception) {
+	public Map<String, Object> exp(Exception exception)
+	{
 		Map<String, Object> map = new HashMap<>();
 		map.put("code", new Integer(1));
 		map.put("msg", exception.getMessage());
+		exception.printStackTrace();
 		return map;
 	}
 

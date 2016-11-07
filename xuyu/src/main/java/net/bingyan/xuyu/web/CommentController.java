@@ -20,7 +20,8 @@ import net.bingyan.xuyu.service.UserService;
 
 @Controller
 @RequestMapping(value = "/comment")
-public class CommentController extends BaseController {
+public class CommentController extends BaseController
+{
 
 	@Autowired
 	private CommentService commentService;
@@ -33,11 +34,13 @@ public class CommentController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "/{momentID}")
-	public Map<String, Object> getAll(@PathVariable("momentID") Integer momentID) {
+	public Map<String, Object> getAll(@PathVariable("momentID") Integer momentID)
+	{
 		List<Map<String, Object>> fullComments = new ArrayList<>();
 		List<Comment> comments = commentService.getMomentComment(momentService.getMoment(momentID));
 		Map<String, Object> fullComment;
-		for (Comment comment : comments) {
+		for (Comment comment : comments)
+		{
 			fullComment = new HashMap<>();
 			fullComment.put("comment", comment);
 			fullComment.put("agreeSum", commentService.getAgreeSum(comment));
@@ -51,7 +54,8 @@ public class CommentController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/{userID}/{momentID}/add")
 	public Map<String, Object> add(@PathVariable("momentID") Integer momentID, @PathVariable("userID") Integer userID,
-			@RequestBody Comment comment) {
+			@RequestBody Comment comment)
+	{
 		comment.setWriter(userID);
 		comment.setMomentId(momentID);
 		comment.setTime(new Date());
@@ -62,12 +66,18 @@ public class CommentController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/{userID}/agree/{action}/{commentID}")
 	public Map<String, Object> agree(@PathVariable("userID") Integer userID,
-			@PathVariable("commentID") Integer commentID, @PathVariable("action") String action) throws Exception {
-		if (action == "add") {
+			@PathVariable("commentID") Integer commentID, @PathVariable("action") String action) throws Exception
+	{
+		if (action.equals("add"))
+		{
 			commentService.agreeComment(userService.getUser(userID), commentService.getComment(commentID));
-		} else if (action == "remove") {
+		}
+		else if (action.equals("remove"))
+		{
 			commentService.undoAgreeComment(userService.getUser(userID), commentService.getComment(commentID));
-		} else {
+		}
+		else
+		{
 			// TODO
 			throw new Exception();
 		}
@@ -75,21 +85,28 @@ public class CommentController extends BaseController {
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/favorite/{userID}")
-	public Map<String, Object> getFavorite(@PathVariable("userID") Integer userID) {
+	@RequestMapping(value = "/{userID}/favorite")
+	public Map<String, Object> getFavorite(@PathVariable("userID") Integer userID)
+	{
 		List<Comment> comments = commentService.getFavoriteComments(userService.getUser(userID));
 		return pack(comments);
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/favorite/{userID}/{action}/{commentID}")
+	@RequestMapping(value = "/{userID}/favorite/{action}/{commentID}")
 	public Map<String, Object> favorite(@PathVariable("userID") Integer userID, @PathVariable("action") String action,
-			@PathVariable("commentID") Integer commentID) throws Exception {
-		if (action == "add") {
+			@PathVariable("commentID") Integer commentID) throws Exception
+	{
+		if (action.equals("add"))
+		{
 			commentService.favoriteComment(userService.getUser(userID), commentService.getComment(commentID));
-		} else if (action == "remove") {
+		}
+		else if (action.equals("remove"))
+		{
 			commentService.undoFavoriteComment(userService.getUser(userID), commentService.getComment(commentID));
-		} else {
+		}
+		else
+		{
 			// TODO
 			throw new Exception();
 		}

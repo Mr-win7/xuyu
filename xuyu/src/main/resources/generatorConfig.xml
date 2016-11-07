@@ -1,6 +1,6 @@
-<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "/home/wuwenqi/workspace/xuyu/mybatis-generator-config_1_0.dtd">
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-	<classPathEntry location="/home/wuwenqi/.m2/repository/mysql/mysql-connector-java/5.1.39/mysql-connector-java-5.1.39.jar" />
+	<classPathEntry location="C:\Users\WuWenqi\.m2\repository\mysql\mysql-connector-java\5.1.39\mysql-connector-java-5.1.39.jar" />
 	<context id="DB2Tables" targetRuntime="Mybatis3Simple"
 		defaultModelType="flat">
 		<property name="beginningDelimiter" value="`" /><property name="endingDelimiter" value="`" />
@@ -27,7 +27,6 @@
 			delimitAllColumns="true">
 		<generatedKey column="comment_id" sqlStatement="JDBC"></generatedKey></table>
 		<table tableName="moment_photo" delimitAllColumns="true">
-		<generatedKey column="id" sqlStatement="JDBC"></generatedKey>
 		</table>
 		
 		<table tableName="moment" delimitAllColumns="true">
