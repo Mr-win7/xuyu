@@ -1,0 +1,91 @@
+package net.bingyan.xuyu.web;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import net.bingyan.xuyu.domain.Moment;
+import net.bingyan.xuyu.domain.MomentPhoto;
+import net.bingyan.xuyu.service.MomentService;
+import net.bingyan.xuyu.service.UserService;
+import net.bingyan.xuyu.service.UtilService;
+
+@Controller
+@RequestMapping(value = "/moment")
+public class MomentController extends BaseController {
+
+	@Autowired
+	private MomentService momentService;
+
+	@Autowired
+	private UtilService utilService;
+
+	@Autowired
+	private UserService userService;
+
+	@ResponseBody
+	@RequestMapping("/all/{mode}/{offset}")
+	public Map<String, Object> getAll(@PathVariable("mode") String mode, @PathVariable("offset") Integer offset)
+			throws Exception {
+		List<Map<String, Object>> momentsWithPhotos = new ArrayList<>();
+		Map<String, Object> momentWithPhotos;
+		List<Moment> moments = new ArrayList<>();
+		if (mode == "hottest") {
+			moments = momentService.getHottestMoments();
+		} else if (mode == "newest") {
+			moments = momentService.getNewestMoments();
+		} else {
+			// TODO
+			throw new Exception();
+		}
+		for (Moment moment : moments) {
+			momentWithPhotos = new HashMap<>();
+			momentWithPhotos.put("moment", moment);
+			momentWithPhotos.put("photo", utilService.getMomentPhotos(moment).get(0));
+			momentWithPhotos.put("commentSum", momentService.getCommentSum(moment));
+			momentWithPhotos.put("favoriteSum", momentService.getFavoriteSum(moment));
+			momentsWithPhotos.add(momentWithPhotos);
+		}
+		return pack(momentsWithPhotos);
+	}
+
+	@ResponseBody
+	@RequestMapping("/{momentID}")
+	public Map<String, Object> get(@PathVariable("momentID") Integer momentID) {
+		Map<String, Object> momentWithPhotos = new HashMap<>();
+		Moment moment = momentService.getMoment(momentID);
+		List<MomentPhoto> photos = utilService.getMomentPhotos(moment);
+		momentWithPhotos.put("moment", moment);
+		momentWithPhotos.put("photos", photos);
+		return pack(momentWithPhotos);
+	}
+
+	@ResponseBody
+	@RequestMapping("/favorite/{userID}/{action}/{momentID}")
+	public Map<String, Object> favorite(@PathVariable("userID") Integer userID, @PathVariable("action") String action,
+			@PathVariable("momentID") Integer momentID) throws Exception {
+		if (action == "add") {
+			momentService.favoriteMoment(userService.getUser(userID), momentService.getMoment(momentID));
+		} else if (action == "remove") {
+			momentService.undoFavoriteMoment(userService.getUser(userID), momentService.getMoment(momentID));
+		} else {
+			throw new Exception("invalid action!");
+		}
+		return pack(null);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/add")
+	public Map<String, Object> add(@RequestBody Moment moment) {
+		momentService.addMoment(moment);
+		return pack(moment.getMomentId());
+	}
+}

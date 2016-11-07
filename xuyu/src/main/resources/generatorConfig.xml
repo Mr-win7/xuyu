@@ -1,0 +1,42 @@
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "/home/wuwenqi/workspace/xuyu/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+	<classPathEntry location="/home/wuwenqi/.m2/repository/mysql/mysql-connector-java/5.1.39/mysql-connector-java-5.1.39.jar" />
+	<context id="DB2Tables" targetRuntime="Mybatis3Simple"
+		defaultModelType="flat">
+		<property name="beginningDelimiter" value="`" /><property name="endingDelimiter" value="`" />
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/xuyu" userId="xuyu"
+			password="xuyupassword">
+		</jdbcConnection>
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" /></javaTypeResolver>
+		<javaModelGenerator targetPackage="net.bingyan.xuyu.domain" targetProject="xuyu/src/main/java">
+			<property name="enableSubPackages" value="true" ></property><property name="trimStrings" value="true" />
+		</javaModelGenerator>
+		<sqlMapGenerator targetPackage="net.bingyan.xuyu.mapper" targetProject="xuyu/src/main/resources">
+			<property name="enableSubPackages" value="true" /></sqlMapGenerator>
+		<javaClientGenerator targetPackage="net.bingyan.xuyu.mapper" type="XMLMAPPER"
+			targetProject="xuyu/src/main/java">
+		</javaClientGenerator>
+		<table tableName="users" domainObjectName="User"
+			delimitAllColumns="true" enableDeleteByPrimaryKey="false">
+		<generatedKey column="user_id" sqlStatement="JDBC"></generatedKey>
+		</table>
+		<table tableName="comments" domainObjectName="Comment"
+			enableDeleteByPrimaryKey="false" enableUpdateByPrimaryKey="false"
+			delimitAllColumns="true">
+		<generatedKey column="comment_id" sqlStatement="JDBC"></generatedKey></table>
+		<table tableName="moment_photo" delimitAllColumns="true">
+		<generatedKey column="id" sqlStatement="JDBC"></generatedKey>
+		</table>
+		
+		<table tableName="moment" delimitAllColumns="true">
+		<property name="selectAllOrderByClause" value="time desc"></property>
+		<generatedKey column="moment_id" sqlStatement="JDBC"></generatedKey>
+		<ignoreColumn column="time"></ignoreColumn>
+		</table>
+		<table tableName="users_agree_comments" delimitAllColumns="true" domainObjectName="UserAgreeComment" enableUpdateByPrimaryKey="false"></table>
+		<table tableName="users_favorite_comments" delimitAllColumns="true" domainObjectName="UserFavoriteComment" enableUpdateByPrimaryKey="false"></table>
+		<table tableName="users_favorite_moment" delimitAllColumns="true" domainObjectName="UserFavoriteMoment" enableUpdateByPrimaryKey="false"></table>
+	</context>
+</generatorConfiguration>
