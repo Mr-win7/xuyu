@@ -78,14 +78,13 @@ public class CommentController extends BaseController
 		}
 		else
 		{
-			// TODO
-			throw new Exception();
+			throw new Exception("invalid action!");
 		}
 		return pack(null);
 	}
 
 	@ResponseBody
-	@RequestMapping(value = "/{userID}/favorite")
+	@RequestMapping(value = "/favorite/{userID}")
 	public Map<String, Object> getFavorite(@PathVariable("userID") Integer userID)
 	{
 		List<Comment> comments = commentService.getFavoriteComments(userService.getUser(userID));
@@ -107,10 +106,26 @@ public class CommentController extends BaseController
 		}
 		else
 		{
-			// TODO
-			throw new Exception();
+			throw new Exception("invalid action!");
 		}
 		return pack(null);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/published/{userId}")
+	public Map<String, Object> published(@PathVariable("userId") Integer userId)
+	{
+		List<Map<String, Object>> commentsWithMovies = new ArrayList<>();
+		List<Comment> comments = commentService.getPublishedComments(userService.getUser(userId));
+		Map<String, Object> commentWithMovie;
+		for (Comment comment : comments)
+		{
+			commentWithMovie = new HashMap<>();
+			commentWithMovie.put("movie", momentService.getMoment(comment.getMomentId()).getMovie());
+			commentWithMovie.put("comment", comment);
+			commentsWithMovies.add(commentWithMovie);
+		}
+		return pack(commentsWithMovies);
 	}
 
 }

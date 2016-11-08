@@ -40,7 +40,7 @@ public class MomentController extends BaseController
 	{
 		List<Map<String, Object>> momentsWithPhotos = new ArrayList<>();
 		Map<String, Object> momentWithPhotos;
-		List<Moment> moments = new ArrayList<>();
+		List<Moment> moments;
 		if (mode.equals("hottest"))
 		{
 			moments = momentService.getHottestMoments();
@@ -51,7 +51,6 @@ public class MomentController extends BaseController
 		}
 		else
 		{
-			// TODO
 			throw new Exception("invalid mode!");
 		}
 		for (Moment moment : moments)
@@ -80,7 +79,7 @@ public class MomentController extends BaseController
 	}
 
 	@ResponseBody
-	@RequestMapping("/favorite/{userID}/{action}/{momentID}")
+	@RequestMapping("/{userID}/favorite/{action}/{momentID}")
 	public Map<String, Object> favorite(@PathVariable("userID") Integer userID, @PathVariable("action") String action,
 			@PathVariable("momentID") Integer momentID) throws Exception
 	{
@@ -115,5 +114,33 @@ public class MomentController extends BaseController
 		}
 
 		return pack(moment.getMomentId());
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/published/{userId}")
+	public Map<String, Object> published(@PathVariable("userId") Integer userId)
+	{
+		List<Map<String, Object>> momentsWithPhotos = new ArrayList<>();
+		List<Moment> moments = momentService.getPublishedMoments(userService.getUser(userId));
+		Map<String, Object> momentWithPhotos;
+		for (Moment moment : moments)
+		{
+			momentWithPhotos = new HashMap<>();
+			momentWithPhotos.put("moment", moment);
+			momentWithPhotos.put("photo", utilService.getMomentPhotos(moment).size() == 0 ? null
+					: utilService.getMomentPhotos(moment).get(0));
+			momentWithPhotos.put("commentSum", momentService.getCommentSum(moment));
+			momentWithPhotos.put("favoriteSum", momentService.getFavoriteSum(moment));
+			momentsWithPhotos.add(momentWithPhotos);
+		}
+		return pack(momentsWithPhotos);
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/favorite/{userId}")
+	public Map<String, Object> getFavorite(@PathVariable("userId") Integer userId)
+	{
+		List<Moment> moments = momentService.getFavoriteMoments(userService.getUser(userId));
+		return pack(moments);
 	}
 }
