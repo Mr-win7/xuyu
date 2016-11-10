@@ -14,17 +14,20 @@ import net.bingyan.xuyu.service.UserService;
 
 @Controller
 @RequestMapping(value = "/user")
-public class UserController extends BaseController {
+public class UserController extends BaseController
+{
 
 	@Autowired
 	private UserService userService;
 
 	@ResponseBody
 	@RequestMapping(value = "/login")
-	public Map<String, Object> login(@RequestBody Map<String, String> parameters) throws Exception {
-		User user = userService.getUser(Integer.valueOf(parameters.get("userId")));
+	public Map<String, Object> login(@RequestBody Map<String, String> parameters) throws Exception
+	{
+		User user = userService.getUserByPhoneNumber(Long.valueOf(parameters.get("phoneNumber")));
 
-		if (user == null) {
+		if (user == null)
+		{
 			throw new Exception("no such user!");
 		}
 
@@ -33,16 +36,19 @@ public class UserController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping(value = "/register")
-	public Map<String, Object> register(@RequestBody User user) throws Exception {
+	public Map<String, Object> register(@RequestBody User user) throws Exception
+	{
 		userService.createUser(user);
-		return pack(user.getUserId());
+		return pack(user);
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/{userID}")
-	public Map<String, Object> profile(@PathVariable("userID") Integer userID) throws Exception {
+	public Map<String, Object> profile(@PathVariable("userID") Integer userID) throws Exception
+	{
 		User profile = userService.getUser(userID);
-		if (profile == null) {
+		if (profile == null)
+		{
 			throw new Exception("no such user!");
 		}
 		return pack(profile);

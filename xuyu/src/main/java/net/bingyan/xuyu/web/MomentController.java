@@ -113,7 +113,7 @@ public class MomentController extends BaseController
 			utilService.addMomentPhotos(momentPhoto);
 		}
 
-		return pack(moment.getMomentId());
+		return pack(moment);
 	}
 
 	@ResponseBody

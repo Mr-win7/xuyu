@@ -5,8 +5,10 @@ import java.util.List;
 import net.bingyan.xuyu.domain.Comment;
 import net.bingyan.xuyu.domain.Moment;
 import net.bingyan.xuyu.domain.MomentPhoto;
+import net.bingyan.xuyu.domain.User;
 
-public interface UtilMapper {
+public interface UtilMapper
+{
 
 	Integer selectCountByCommentAgree(Integer commentId);
 
@@ -33,4 +35,6 @@ public interface UtilMapper {
 	List<Comment> selectUserPublishedComments(Integer writer);
 
 	List<MomentPhoto> selectMomentPhotos(Integer momentId);
+
+	User selectUserByPhoneNumber(Long phoneNumber);
 }

@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,10 @@ public class UtilController extends BaseController
 					+ (int) (Math.random() * 10000000);
 			Path path = Paths.get(System.getProperty("user.home"), "server", "xuyu", "image", name);
 			file.transferTo(new File(path.toUri()));
-			return pack(name);
+
+			Map<String, Object> map = new HashMap<>();
+			map.put("name", name);
+			return pack(map);
 		}
 		else
 		{
